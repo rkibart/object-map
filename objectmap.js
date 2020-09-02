@@ -4,7 +4,6 @@ Object.prototype.map = function(callback/*[key, value], idx, self*/) {
     console.log('hello')
     
     const reducer = function(acumulator, [key, value], idx, self) {
-        console.log('hi this: ',this)
         
         Object.assign(acumulator, callback([key, value], idx, this))
         
@@ -34,6 +33,8 @@ const callback = ([key, value], idx, self) => {
 
 const wynik = car.map(callback)
 console.log('wynik: ', wynik)
+
+
 
 
 
