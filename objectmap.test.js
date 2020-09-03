@@ -19,23 +19,24 @@ Object.prototype.map = function(callback/*[key, value], idx, self*/) {
 
 describe('Object.prototype.map function tests', () => {
 
-    // it('Should throw an error when callback is not a function', () => {
-    //     const car = {
-    //         brand: 'Ford',
-    //         color: 'Black'
-    //     }
+    const car = {
+        brand: 'Ford',
+        color: 'Black'
+    }
 
-    //     const cb = 'string'
-
-        
-    //     expect(car.map(cb)).toThrowError(TypeError)
-    // })
-
-    it('Should return shalow copy of input object ', () => {
+    it('Should throw an error when callback is not a function', () => {
         const car = {
             brand: 'Ford',
             color: 'Black'
         }
+
+        const cb = 'string'
+
+        
+        expect(car.map(cb)).toThrowError(TypeError)
+    })
+
+    it('Should return shalow copy of input object when callback rewrites pairs key value', () => {
 
         const cb = ([k,v]) => {
             return {[k]:v}
@@ -50,51 +51,59 @@ describe('Object.prototype.map function tests', () => {
         
         
     })
+    it('Should change value if key matches', () => {
+
+        const cb = ([k,v]) => {
+            if(k==='color') {
+                return {[k]: 'Blue'} 
+            }
+            return {[k]:v}
+        }      
+        expect(car.map(cb).brand).toBe('Ford')
+        expect(car.map(cb).color).toBe('Blue')
+        
+    })
+    it('Should change key if key matches', () => {
+
+        const cb = ([k,v]) => {
+            if(k==='color') {
+                [k] = ['oldcolor']
+                return {[k]: v} 
+            }
+            return {[k]:v}
+        }      
+        expect(car.map(cb).brand).toBe('Ford')
+        expect(car.map(cb).oldcolor).toBe('Black')
+        
+    })
+    it('Should change value if value matches', () => {
+        const cb = ([k,v]) => {
+            if(v==='Ford') {
+                v = 'Mazda'
+                return {[k]: v} 
+            }
+            return {[k]:v}
+        }      
+        expect(car.map(cb).brand).toBe('Mazda')
+        expect(car.map(cb).color).toBe('Black')
+        
+    })
+    it('Should return empty object if value and key do not match', () => {
+        const cb = ([k,v]) => {
+            if(v==='Fiat') {
+                v = 'Mazda'
+                return {[k]: v} 
+            } else if (k === 'model') {
+                [k] = 'oldmodel'
+                return {[k]: v}
+            }
+            return {}
+        }      
+        expect( Object.keys(car.map(cb)).length).toBe(0)
+        
+    })
 
 })
 
 
-
-
-
-const car = {
-    brand: 'Ford',
-    color: 'Black'
-}
-
-const functionObject = {
-    funkcja: function() {
-        console.log('nic nierobiąca funkcja')
-    }
-}
-
-const objektObiekcie = {
-    name: 'Ala',
-    auto: car,
-    drugieAuto: {
-        brand: 'Mazda',
-        drugewDrugim: car
-    }
-}
-
-
-const callback = ([key, value], idx, self) => {
-    console.log('this: ', this)
-    console.log('key: ', key)
-    console.log('value: ', value)
-    console.log('idx: ',idx)
-    console.log('self: ', self)
-    console.log('callback result ', {key: value})
-
-    if(value === 'Ford') {
-        newValue='Mazda'
-        return {[key]: newValue}
-    }
-    return {[key]: value}
-}
-
-const callbackWithAllParams = ([k, v], i, s) => {
-    k = k + i
-    return {[k]:  v}
-}
 
